@@ -28,14 +28,12 @@ ALL_METHODS = [('sample_np10_hybrid3_bl0_dl0_ds0_crfrnn5_sm0', '', 0, 2)]
 
 
 def evaluatePlanes(options):
-    #writeHTML(options)
-    #exit(1)
+
     if not os.path.exists(options.test_dir):
         os.system("mkdir -p %s"%options.test_dir)
         pass
     
     predictions = getResults(options)
-    
 
     saving = True
     if predictions[0]['image'].shape[0] != options.numImages:
@@ -182,11 +180,7 @@ def getPredictionCustom(options):
 
     width_high_res = 640
     height_high_res = 480
-                
-
-    #image_list = glob.glob('../my_images/*.jpg') + glob.glob('../my_images/*.png') + glob.glob('../my_images/*.JPG')
-    #image_list = glob.glob('../my_images/TV/*.jpg') + glob.glob('../my_images/TV/*.png') + glob.glob('../my_images/TV/*.JPG')
-    #image_list = glob.glob('../my_images/TV/*.jpg') + glob.glob('../my_images/TV/*.png') + glob.glob('../my_images/TV/*.JPG')
+    
     image_list = glob.glob(options.customImageFolder + '/*.jpg') + glob.glob(options.customImageFolder + '/*.png') + glob.glob(options.customImageFolder + '/*.JPG')
     options.visualizeImages = min(options.visualizeImages, len(image_list))
     
@@ -200,7 +194,6 @@ def getPredictionCustom(options):
         
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(sess=sess, coord=coord)
-        
         
         try:
             predDepths = []
@@ -229,8 +222,7 @@ def getPredictionCustom(options):
                 global_pred = sess.run(global_pred_dict, feed_dict={img_inp: img})
 
                 if index < options.startIndex:
-                    continue                
-
+                    continue
 
                 pred_p = global_pred['plane'][0]
                 pred_s = global_pred['segmentation'][0]
@@ -239,12 +231,6 @@ def getPredictionCustom(options):
                 pred_np_d = global_pred['non_plane_depth'][0]
                 pred_np_n = global_pred['non_plane_normal'][0]
                 
-                #if global_gt['info'][0][19] > 1 and global_gt['info'][0][19] < 4 and False:
-                #pred_np_n = calcNormal(pred_np_d.squeeze(), global_gt['info'][0])
-                #pass
-
-
-                #pred_b = global_pred['boundary'][0]
                 predNonPlaneMasks.append(pred_np_m)                    
                 predNonPlaneDepths.append(pred_np_d)
                 predNonPlaneNormals.append(pred_np_n)
@@ -278,10 +264,6 @@ def getPredictionCustom(options):
                     info[19] = 5
                     pass
 
-                # print(focalLength)
-                # cv2.imwrite('test/image.png', ((img[0] + 0.5) * 255).astype(np.uint8))
-                # cv2.imwrite('test/segmentation.png', drawSegmentationImage(pred_s, blackIndex=options.numOutputPlanes))
-                # exit(1)
                 infos.append(info)
                 width_high_res = img_ori.shape[1]
                 height_high_res = img_ori.shape[0]
@@ -297,8 +279,6 @@ def getPredictionCustom(options):
                 pred_d = all_depths.reshape(-1, options.numOutputPlanes + 1)[np.arange(height_high_res * width_high_res), segmentation.reshape(-1)].reshape(height_high_res, width_high_res)
 
                 if 'semantics' in global_pred:
-                    #cv2.imwrite('test/semantics.png', drawSegmentationImage(np.argmax(global_pred['semantics'][0], axis=-1)))
-                    #exit(1)
                     predSemantics.append(np.argmax(global_pred['semantics'][0], axis=-1))
                 else:
                     predSemantics.append(np.zeros((HEIGHT, WIDTH)))
