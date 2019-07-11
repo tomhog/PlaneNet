@@ -1,0 +1,75 @@
+
+# trained planenet model
+
+https://mega.nz/#!sjpT2DiQ!Uo-6hxyldmtnPoKk3TTdUHKZADRGy6nIPlmAeVzJs_8
+
+
+#Install tensor flow - use python 2.7 version
+
+
+https://www.tensorflow.org/install/pip?lang=python2
+
+python --version
+pip --version
+virtualenv --version
+
+
+# create virtual env
+
+virtualenv --system-site-packages -p python2.7 ./venv
+source ./venv/bin/activate
+pip install --upgrade pip
+
+
+#install tensor flow and dependancies for planenet
+
+pip install --upgrade tensorflow
+pip install --upgrade opencv-python
+pip install --upgrade pillow
+pip install --upgrade scipy
+pip install --upgrade scikit-image
+pip install --upgrade keras
+pip install --upgrade pylsd
+
+# test tensor flow
+
+python -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"
+
+
+# install cuda
+
+(macOS)
+https://www.nvidia.com/content/DriverDownload-March2009/confirmation.php?url=/Mac/cuda_410/cudadriver_410.130_macos.dmg&lang=us&type=GeForce
+
+https://developer.nvidia.com/cuda-downloads?target_os=MacOSX&target_arch=x86_64&target_version=1013&target_type=dmglocal
+
+
+# planenet compilation
+
+cd crfasrnn
+sh compile.sh
+cd ..
+
+
+download and build eigen
+http://eigen.tuxfamily.org/index.php?title=Main_Page
+
+cd nndistance
+make
+cd ..
+
+
+# test planenet
+
+python predict.py --customImageFolder="/Users/thomashogarth/Sites/planenet/customImageFolder"
+
+
+#
+# run from scratch
+#
+
+#reactivate env
+
+source ./venv/bin/activate
+
+
